@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler
 
