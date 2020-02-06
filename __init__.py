@@ -3,8 +3,6 @@
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler
 
-import youtube_dl
-
 
 class YoutubedlSkill(MycroftSkill):
     def __init__(self):
