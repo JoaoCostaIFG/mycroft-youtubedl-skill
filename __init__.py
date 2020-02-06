@@ -20,16 +20,16 @@ class YoutubedlSkill(MycroftSkill):
         settings will be available."""
         my_setting = self.settings.get("my_setting")
 
-    @intent_handler(IntentBuilder("YoutubedlIntent").require("YoutubedlKeyword"))
-    def handle_thank_you_intent(self, message):
-        """ This is an Adapt intent handler, it is triggered by a keyword."""
-        self.speak_dialog("youtubedl")
+    #  @intent_handler(IntentBuilder("YoutubedlIntent").require("YoutubedlKeyword"))
+    #  def handle_thank_you_intent(self, message):
+        #  """ This is an Adapt intent handler, it is triggered by a keyword."""
+        #  self.speak_dialog("youtubedl")
 
-    #  @intent_handler("HowAreYou.intent")
-    #  def handle_how_are_you_intent(self, message):
-        #  """ This is a Padatious intent handler.
-        #  It is triggered using a list of sample phrases."""
-        #  self.speak_dialog("how.are.you")
+    @intent_handler("Youtubedl.intent")
+    def handle_how_are_you_intent(self, message):
+        """ This is a Padatious intent handler.
+        It is triggered using a list of sample phrases."""
+        self.speak_dialog("youtubedl.dialog")
 
     #  @intent_handler(IntentBuilder("HelloWorldIntent").require("HelloWorldKeyword"))
     #  def handle_hello_world_intent(self, message):
