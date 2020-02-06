@@ -29,7 +29,7 @@ class YoutubedlSkill(MycroftSkill):
     def handle_how_are_you_intent(self, message):
         """ This is a Padatious intent handler.
         It is triggered using a list of sample phrases."""
-        self.speak_dialog("youtubedl.dialog")
+        self.speak_dialog("youtubedl")
 
     #  @intent_handler(IntentBuilder("HelloWorldIntent").require("HelloWorldKeyword"))
     #  def handle_hello_world_intent(self, message):
