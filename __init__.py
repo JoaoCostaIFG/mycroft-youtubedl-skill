@@ -9,6 +9,13 @@ class YoutubedlSkill(MycroftSkill):
         super().__init__()
         self.playing = False
 
+    def initialize(self):
+        """ Perform any final setup needed for the skill here.
+        This function is invoked after the skill is fully constructed and
+        registered with the system. Intents will be registered and Skill
+        settings will be available."""
+        pass
+
     @intent_handler(IntentBuilder("youtubedl.intent").require("YoutubedlKeyword.voc"))
     def handle_playintent(self, message):
         vid_name = message.data.get("vid")
