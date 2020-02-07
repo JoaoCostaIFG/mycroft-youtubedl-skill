@@ -1,7 +1,20 @@
 from __future__ import unicode_literals
 import youtube_dl
 
+
+def youtubedl_hook(msg):
+    if msg["status"] == "downloading":
+        pass
+        print("Downloading " + msg["filename"])
+    elif msg["status"] == "finished":
+        print("Finished downloading " + msg["filename"])
+    elif msg["status"] == "error":
+        print("Error downloading " + msg["filename"])
+
+
 ydl_opts = {
+    "default_search": "auto",
+    "quiet": True,
     "format": "bestaudio/best",
     "postprocessors": [
         {
@@ -10,6 +23,9 @@ ydl_opts = {
             "preferredquality": "128",
         }
     ],
+    "progress_hooks": [youtubedl_hook],
 }
+
+
 with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-    ydl.download(["https://www.youtube.com/watch?v=6qNgrtyUIQQ"])
+    ydl.download(["shine on  your crazy diamond"])

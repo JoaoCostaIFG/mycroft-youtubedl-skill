@@ -1,2 +1,3 @@
 youtube {vid}
 youtube (play | start | download) {vid}
+youtube stop
