@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler
 import youtube_dl
-from subprocess import check_call, DEVNULL, STDOUT
+from subprocess import Popen, DEVNULL, STDOUT, CalledProcessError
 from os import remove
 
 
@@ -17,7 +17,6 @@ class YoutubedlSkill(MycroftSkill):
         self.is_downloading = False
         self.proc = None
         self.vid = None
-        self.cnt = 0
 
     def initialize(self):
         """ Perform any final setup needed for the skill here.
@@ -29,9 +28,17 @@ class YoutubedlSkill(MycroftSkill):
     def play_vid(self):
         if self.proc is not None:
             self.stop()
-        self.proc = check_call(
-            ["mpv", "--vid=no", self.vid], stdout=DEVNULL, stderr=STDOUT
-        )
+        try:
+            self.proc = Popen(
+                ["mpv", "--vid=no", self.vid],
+                stdin=DEVNULL,
+                stdout=DEVNULL,
+                stderr=STDOUT,
+            )
+        except OSError:
+            self.log.error("Error playing video youtubedl: non-existent file.")
+        except CalledProcessError:
+            self.log.error("Error playing video youtubedl: non-existent file.")
         self.log.info("Finished playing video youtubedl.")
         self.stop()
 
@@ -88,8 +95,6 @@ class YoutubedlSkill(MycroftSkill):
     @intent_handler(IntentBuilder("YoutubedlStop").require("YoutubedlStopKeyword"))
     def handle_youtubedl_stop_intent(self, message):
         """ This is an Adapt intent handler, it is triggered by a keyword."""
-        self.cnt += 1
-        self.log.error("it is: " + str(self.cnt))
         self.stop()
         self.speak_dialog("youtubedl_stop")
 
