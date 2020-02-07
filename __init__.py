@@ -70,11 +70,14 @@ class YoutubedlSkill(MycroftSkill):
         vid_name = message.data.get("vid")
         if vid_name is not None:
             self.download_vid(vid_name)
+            self.log.debug("Done download video youtubedl.")
             if self.vid is not None:
+                self.log.debug("Start play video youtubedl.")
                 self.play_vid()
+                self.log.debug("Done play video youtubedl.")
         else:
             self.speak_dialog("youtubedl")
-        self.log.info("Done youtubedl.")
+        self.log.debug("Done youtubedl.")
 
     def stop(self):
         if self.proc:
