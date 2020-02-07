@@ -44,6 +44,7 @@ class YoutubedlSkill(MycroftSkill):
                 # play the stuff
                 self.log.info("Start playing video youtubedl.")
                 self.play_vid()
+                self.proc.wait()  # wait for end
 
             elif msg["status"] == "error":
                 self.vid = None
