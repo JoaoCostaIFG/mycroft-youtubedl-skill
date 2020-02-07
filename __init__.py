@@ -34,12 +34,12 @@ class YoutubedlSkill(MycroftSkill):
     #  self.log.error("Error downloading " + msg["filename"])
 
     def download_vid(self, vid_name):
-        if self.downloading:
-            self.log.warning("Already downloading a video, wait.")
-            self.speak_dialog("Already downloading a video, wait.")
-            return
+        #  if self.downloading:
+            #  self.log.warning("Already downloading a video, wait.")
+            #  self.speak_dialog("Already downloading a video, wait.")
+            #  return
 
-        self.downloading = True
+        #  self.downloading = True
         # youtube_dl options
         ydl_opts = {
             "default_search": "auto",
@@ -55,18 +55,19 @@ class YoutubedlSkill(MycroftSkill):
         }
 
         # download and convert video
-        failed = 0
+        #  failed = 0
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            failed = ydl.download([vid_name])
+            ydl.download([vid_name])
+            #  failed = ydl.download([vid_name])
 
         # check and handle failures
-        if failed:
-            self.log.error("Error downloading " + vid_name)
-            self.speak_dialog("Error downloading " + vid_name)
-        else:
-            self.log.info("Finished downloading " + vid_name)
-            self.speak_dialog("Finished downloading " + vid_name)
-        self.downloading = False
+        #  if failed:
+            #  self.log.error("Error downloading " + vid_name)
+            #  self.speak_dialog("Error downloading " + vid_name)
+        #  else:
+            #  self.log.info("Finished downloading " + vid_name)
+            #  self.speak_dialog("Finished downloading " + vid_name)
+        #  self.downloading = False
 
     @intent_handler("Youtubedl.intent")
     def handle_youtubedl_intent(self, message):
