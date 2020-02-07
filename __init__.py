@@ -56,7 +56,7 @@ class YoutubedlSkill(MycroftSkill):
                 self.speak_dialog("Error downloading " + vid_name + ".")
 
         # check if still playing
-        self.stop():
+        self.stop()
         # check if a download is currently in progress
         if self.is_downloading:
             self.log.warning("Already downloading a video, wait.")
