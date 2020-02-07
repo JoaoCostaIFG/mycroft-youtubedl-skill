@@ -39,8 +39,8 @@ class YoutubedlSkill(MycroftSkill):
             self.log.error("Error playing video youtubedl: non-existent file.")
         except CalledProcessError:
             self.log.error("Error playing video youtubedl: non-existent file.")
-        self.log.info("Finished playing video youtubedl.")
-        self.stop()
+        #  self.log.info("Finished playing video youtubedl.")
+        #  self.stop()
 
     def download_vid(self, vid_name):
         # hook to check and handle failures
