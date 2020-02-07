@@ -106,6 +106,9 @@ class YoutubedlSkill(MycroftSkill):
             self.proc.terminate()
         if self.vid:
             remove(self.vid)
+        # reset vars
+        self.vid = None
+        self.proc = None
 
 
 def create_skill():
