@@ -9,20 +9,12 @@ from os import remove
 
 class YoutubedlSkill(MycroftSkill):
     def __init__(self):
-        """ The __init__ method is called when the Skill is first constructed.
-        It is often used to declare variables or perform setup actions, however
-        it cannot utilise MycroftSkill methods as the class does not yet exist.
-        """
         super().__init__()
         self.is_downloading = False
         self.proc = None
         self.vid = None
 
     def initialize(self):
-        """ Perform any final setup needed for the skill here.
-        This function is invoked after the skill is fully constructed and
-        registered with the system. Intents will be registered and Skill
-        settings will be available."""
         my_setting = self.settings.get("my_setting")
 
     def play_vid(self):
@@ -30,7 +22,7 @@ class YoutubedlSkill(MycroftSkill):
             self.stop()
         try:
             self.proc = Popen(
-                ["mpv", "--vid=no", self.vid],
+                ["mpv", "--vid=no", "--keep-open=no", self.vid],
                 stdin=DEVNULL,
                 stdout=DEVNULL,
                 stderr=STDOUT,
@@ -49,14 +41,16 @@ class YoutubedlSkill(MycroftSkill):
                 self.vid = msg["filename"]
                 self.is_downloading = False
                 self.log.info("Finished downloading " + vid_name)
+                # play the stuff
+                self.log.info("Start playing video youtubedl.")
+                self.play_vid()
+
             elif msg["status"] == "error":
                 self.vid = None
                 self.is_downloading = False
                 self.log.error("Error downloading " + vid_name + ".")
                 self.speak_dialog("Error downloading " + vid_name + ".")
 
-        # stop current playing, if any
-        self.stop()
         # check if a download is currently in progress
         if self.is_downloading:
             self.log.warning("Already downloading a video, wait.")
@@ -91,9 +85,6 @@ class YoutubedlSkill(MycroftSkill):
             else:
                 self.download_vid(vid_name)
                 self.log.info("Done downloading video youtubedl.")
-                if self.vid is not None:
-                    self.log.info("Start playing video youtubedl.")
-                    self.play_vid()
         else:
             self.speak_dialog("youtubedl")
         self.log.debug("Done youtubedl.")
