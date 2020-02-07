@@ -55,7 +55,7 @@ class YoutubedlSkill(MycroftSkill):
                 self.log.error("Error downloading " + vid_name + ".")
                 self.speak_dialog("Error downloading " + vid_name + ".")
 
-        # check if still playing
+        # stop current playing, if any
         self.stop()
         # check if a download is currently in progress
         if self.is_downloading:
@@ -85,20 +85,24 @@ class YoutubedlSkill(MycroftSkill):
         It is triggered using a list of sample phrases."""
         vid_name = message.data.get("vid")
         if vid_name is not None:
-            self.download_vid(vid_name)
-            self.log.info("Done downloading video youtubedl.")
-            if self.vid is not None:
-                self.log.info("Start playing video youtubedl.")
-                self.play_vid()
+            if vid_name == "stop":
+                self.stop()
+                self.speak_dialog("youtubedl_stop")
+            else:
+                self.download_vid(vid_name)
+                self.log.info("Done downloading video youtubedl.")
+                if self.vid is not None:
+                    self.log.info("Start playing video youtubedl.")
+                    self.play_vid()
         else:
             self.speak_dialog("youtubedl")
         self.log.debug("Done youtubedl.")
 
-    @intent_handler(IntentBuilder("YoutubedlStop").require("YoutubedlStopKeyword"))
-    def handle_youtubedl_stop_intent(self, message):
-        """ This is an Adapt intent handler, it is triggered by a keyword."""
-        self.stop()
-        self.speak_dialog("youtubedl_stop")
+    #  @intent_handler(IntentBuilder("YoutubedlStop").require("YoutubedlStopKeyword"))
+    #  def handle_youtubedl_stop_intent(self, message):
+    #  """ This is an Adapt intent handler, it is triggered by a keyword."""
+    #  self.stop()
+    #  self.speak_dialog("youtubedl_stop")
 
     def stop(self):
         self.log.info("Stop playing video youtubedl.")
