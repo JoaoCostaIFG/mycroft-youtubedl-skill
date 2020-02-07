@@ -46,6 +46,8 @@ class YoutubedlSkill(MycroftSkill):
                 self.speak_dialog("Error downloading " + vid_name + ".")
 
         # check if a download is currently in progress
+        if self.proc:
+            self.log.error("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
         if self.is_downloading:
             self.log.warning("Already downloading a video, wait.")
             self.speak_dialog("Already downloading a video, wait.")
