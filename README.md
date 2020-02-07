@@ -66,3 +66,8 @@ Entertainment
 
 #Youtube
 #Music
+
+## Thanks
+
+Thank you to my friend [anaines14](https://github.com/anaines14) for the idea,
+inspiration and motivation to finish this small skill.
