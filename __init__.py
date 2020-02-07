@@ -1,9 +1,7 @@
 #!/usr/bin/python3
-
+from __future__ import unicode_literals
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler
-
-from __future__ import unicode_literals
 import youtube_dl
 
 
