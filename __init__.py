@@ -27,7 +27,9 @@ class YoutubedlSkill(MycroftSkill):
     def play_vid(self):
         if self.proc is not None:
             self.stop()
-        self.proc = check_call(["mpv", "--vid=no", self.vid], stdout=DEVNULL, stderr=STDOUT)
+        self.proc = check_call(
+            ["mpv", "--vid=no", self.vid], stdout=DEVNULL, stderr=STDOUT
+        )
 
     def download_vid(self, vid_name):
         # hook to check and handle failures
@@ -57,6 +59,7 @@ class YoutubedlSkill(MycroftSkill):
             "format": "bestaudio/best",
             "noplaylist": True,
             "quiet": True,
+            "progress_hooks": [youtubedl_hook],
         }
 
         # download and convert video
@@ -70,11 +73,11 @@ class YoutubedlSkill(MycroftSkill):
         vid_name = message.data.get("vid")
         if vid_name is not None:
             self.download_vid(vid_name)
-            self.log.debug("Done download video youtubedl.")
+            self.log.error("Done download video youtubedl.")
             if self.vid is not None:
-                self.log.debug("Start play video youtubedl.")
+                self.log.error("Start play video youtubedl.")
                 self.play_vid()
-                self.log.debug("Done play video youtubedl.")
+                self.log.error("Done play video youtubedl.")
         else:
             self.speak_dialog("youtubedl")
         self.log.debug("Done youtubedl.")
