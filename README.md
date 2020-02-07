@@ -10,11 +10,15 @@ playlists) and play its audio.
 ## Install
 
 If you have msm:
+
 `mycroft-msm install https://github.com/JoaoCostaIFG/mycroft-youtubedl-skill.git`
+
 or
+
 `msm install https://github.com/JoaoCostaIFG/mycroft-youtubedl-skill.git`
 
 You can also install it manually by:
+
 ```sh
 sudo apt-get install mpv
 sudo pip3 install youtube_dl
