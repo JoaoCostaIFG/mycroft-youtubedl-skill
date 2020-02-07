@@ -42,6 +42,13 @@ class YoutubedlSkill(MycroftSkill):
         #  self.log.info("Finished playing video youtubedl.")
         #  self.stop()
 
+    def wait_for_stop(self):
+        if self.proc is None:
+            return 0
+        if self.proc.poll() is None:
+            self.log.error("Is still going.")
+            return 1
+
     def download_vid(self, vid_name):
         # hook to check and handle failures
         def youtubedl_hook(msg):
@@ -55,6 +62,9 @@ class YoutubedlSkill(MycroftSkill):
                 self.log.error("Error downloading " + vid_name + ".")
                 self.speak_dialog("Error downloading " + vid_name + ".")
 
+        # check if still playing
+        if self.wait_for_stop():
+            return
         # check if a download is currently in progress
         if self.is_downloading:
             self.log.warning("Already downloading a video, wait.")
