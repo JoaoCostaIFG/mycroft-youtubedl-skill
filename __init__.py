@@ -74,7 +74,7 @@ class YoutubedlSkill(MycroftSkill):
         vid_name = message.data.get("vid")
         if vid_name is not None:
             self.speak_dialog("Looking for " + vid_name)
-            self.download_vid(self, vid_name)
+            self.download_vid(vid_name, self)
         else:
             self.speak_dialog("youtubedl")
 
