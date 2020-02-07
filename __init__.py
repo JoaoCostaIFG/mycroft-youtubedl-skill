@@ -86,6 +86,7 @@ class YoutubedlSkill(MycroftSkill):
     @intent_handler(IntentBuilder("YoutubedlStop").require("YoutubedlStopKeyword"))
     def handle_youtubedl_stop_intent(self, message):
         """ This is an Adapt intent handler, it is triggered by a keyword."""
+        self.log.error(self.vid)
         self.stop()
         self.speak_dialog("youtubedl_stop")
 
