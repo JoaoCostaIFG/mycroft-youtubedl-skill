@@ -36,13 +36,18 @@ class YoutubedlSkill(MycroftSkill):
             self.log.warning("Already downloading a video, wait.")
             self.speak_dialog("Already downloading a video, wait.")
             return
+        else:
+            self.log.info("Looking for " + vid_name + ".")
+            self.speak_dialog("Looking for " + vid_name + ".")
 
+        self.log.info("Downloading " + vid_name + ".")
         self.downloading = True
         # youtube_dl options
         ydl_opts = {
             "default_search": "auto",
-            "quiet": True,
             "format": "bestaudio/best",
+            "noplaylist": True,
+            "quiet": True,
             "postprocessors": [
                 {
                     "key": "FFmpegExtractAudio",
@@ -58,13 +63,14 @@ class YoutubedlSkill(MycroftSkill):
             failed = ydl.download([vid_name])
 
         # check and handle failures
-        if failed:
-            self.log.error("Error downloading " + vid_name)
-            self.speak_dialog("Error downloading " + vid_name)
-        else:
-            self.log.info("Finished downloading " + vid_name)
-            self.speak_dialog("Finished downloading " + vid_name)
         self.downloading = False
+        if failed:
+            self.log.error("Error downloading " + vid_name + ".")
+            self.speak_dialog("Error downloading " + vid_name + ".")
+            return
+        #  else:
+        #  self.log.info("Finished downloading " + vid_name)
+        #  self.speak_dialog("Finished downloading " + vid_name)
 
     @intent_handler("Youtubedl.intent")
     def handle_youtubedl_intent(self, message):
@@ -72,11 +78,10 @@ class YoutubedlSkill(MycroftSkill):
         It is triggered using a list of sample phrases."""
         vid_name = message.data.get("vid")
         if vid_name is not None:
-            self.log.info("Looking for " + vid_name)
-            self.speak_dialog("Looking for " + vid_name)
             self.download_vid(vid_name)
         else:
             self.speak_dialog("youtubedl")
+        self.log.info("Done youtubedl.")
 
     def stop(self):
         pass
