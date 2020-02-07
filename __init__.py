@@ -17,6 +17,7 @@ class YoutubedlSkill(MycroftSkill):
         self.is_downloading = False
         self.proc = None
         self.vid = None
+        self.cnt = 0
 
     def initialize(self):
         """ Perform any final setup needed for the skill here.
@@ -31,7 +32,8 @@ class YoutubedlSkill(MycroftSkill):
         self.proc = check_call(
             ["mpv", "--vid=no", self.vid], stdout=DEVNULL, stderr=STDOUT
         )
-        self.log.error("ASIUDHAIUHSDIUHASDIUHADSIIHUASHDASUHI")
+        self.log.info("Finished playing video youtubedl.")
+        self.stop()
 
     def download_vid(self, vid_name):
         # hook to check and handle failures
@@ -77,7 +79,7 @@ class YoutubedlSkill(MycroftSkill):
             self.download_vid(vid_name)
             self.log.info("Done downloading video youtubedl.")
             if self.vid is not None:
-                self.log.error("Start playing video youtubedl.")
+                self.log.info("Start playing video youtubedl.")
                 self.play_vid()
         else:
             self.speak_dialog("youtubedl")
@@ -86,7 +88,8 @@ class YoutubedlSkill(MycroftSkill):
     @intent_handler(IntentBuilder("YoutubedlStop").require("YoutubedlStopKeyword"))
     def handle_youtubedl_stop_intent(self, message):
         """ This is an Adapt intent handler, it is triggered by a keyword."""
-        self.log.error(self.vid)
+        self.cnt += 1
+        self.log.error("it is: " + str(self.cnt))
         self.stop()
         self.speak_dialog("youtubedl_stop")
 
