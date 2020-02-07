@@ -31,6 +31,7 @@ class YoutubedlSkill(MycroftSkill):
         self.proc = check_call(
             ["mpv", "--vid=no", self.vid], stdout=DEVNULL, stderr=STDOUT
         )
+        self.log.error("ASIUDHAIUHSDIUHASDIUHADSIIHUASHDASUHI")
 
     def download_vid(self, vid_name):
         # hook to check and handle failures
