@@ -4,6 +4,7 @@ from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler
 import youtube_dl
 from subprocess import check_call, DEVNULL, STDOUT
+from os import remove
 
 
 class YoutubedlSkill(MycroftSkill):
@@ -73,19 +74,26 @@ class YoutubedlSkill(MycroftSkill):
         vid_name = message.data.get("vid")
         if vid_name is not None:
             self.download_vid(vid_name)
-            self.log.error("Done download video youtubedl.")
+            self.log.info("Done downloading video youtubedl.")
             if self.vid is not None:
-                self.log.error("Start play video youtubedl.")
+                self.log.error("Start playing video youtubedl.")
                 self.play_vid()
-                self.log.error("Done play video youtubedl.")
         else:
             self.speak_dialog("youtubedl")
         self.log.debug("Done youtubedl.")
 
+    @intent_handler(IntentBuilder("YoutubedlStop").require("YoutubedlStopKeyword"))
+    def handle_youtubedl_stop_intent(self, message):
+        """ This is an Adapt intent handler, it is triggered by a keyword."""
+        self.stop()
+        self.speak_dialog("youtubedl_stop")
+
     def stop(self):
+        self.log.error("Stop playing video youtubedl.")
         if self.proc:
             self.proc.terminate()
-        pass
+        if self.vid:
+            remove(self.vid)
 
 
 def create_skill():
