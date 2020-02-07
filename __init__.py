@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler
 import youtube_dl
+from subprocess import check_call, DEVNULL, STDOUT
 
 
 class YoutubedlSkill(MycroftSkill):
@@ -12,8 +13,9 @@ class YoutubedlSkill(MycroftSkill):
         it cannot utilise MycroftSkill methods as the class does not yet exist.
         """
         super().__init__()
-        self.playing = False
-        self.downloading = False
+        self.is_downloading = False
+        self.proc = None
+        self.vid = None
 
     def initialize(self):
         """ Perform any final setup needed for the skill here.
@@ -22,55 +24,44 @@ class YoutubedlSkill(MycroftSkill):
         settings will be available."""
         my_setting = self.settings.get("my_setting")
 
-    #  def youtubedl_hook(msg):
-    #  if msg["status"] == "downloading":
-    #  pass
-    #  #  print("Downloading " + msg["filename"])
-    #  elif msg["status"] == "finished":
-    #  self.log.info("Finished downloading " + msg["filename"])
-    #  elif msg["status"] == "error":
-    #  self.log.error("Error downloading " + msg["filename"])
+    def play_vid(self):
+        if self.proc is not None:
+            self.stop()
+        self.proc = check_call(["mpv", "--vid=no", self.vid], stdout=DEVNULL, stderr=STDOUT)
 
     def download_vid(self, vid_name):
-        if self.downloading:
+        # hook to check and handle failures
+        def youtubedl_hook(msg):
+            if msg["status"] == "finished":
+                self.vid = msg["filename"]
+                self.is_downloading = False
+                self.log.info("Finished downloading " + vid_name)
+            elif msg["status"] == "error":
+                self.vid = None
+                self.is_downloading = False
+                self.log.error("Error downloading " + vid_name + ".")
+                self.speak_dialog("Error downloading " + vid_name + ".")
+
+        # check if a download is currently in progress
+        if self.is_downloading:
             self.log.warning("Already downloading a video, wait.")
             self.speak_dialog("Already downloading a video, wait.")
             return
-        else:
-            self.log.info("Looking for " + vid_name + ".")
-            self.speak_dialog("Looking for " + vid_name + ".")
 
         self.log.info("Downloading " + vid_name + ".")
-        self.downloading = True
+        self.speak_dialog("Downloading " + vid_name + ".")
+        self.is_downloading = True
         # youtube_dl options
         ydl_opts = {
             "default_search": "auto",
             "format": "bestaudio/best",
             "noplaylist": True,
             "quiet": True,
-            "postprocessors": [
-                {
-                    "key": "FFmpegExtractAudio",
-                    "preferredcodec": "mp3",
-                    "preferredquality": "128",
-                }
-            ],
         }
 
         # download and convert video
-        failed = 0
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            failed = ydl.download([vid_name])
-
-        # check and handle failures
-        self.downloading = False
-        if failed:
-            self.log.error("Error downloading " + vid_name + ".")
-            self.speak_dialog("Error downloading " + vid_name + ".")
-            return
-        #  else:
-        #  self.log.info("Finished downloading " + vid_name)
-        #  self.speak_dialog("Finished downloading " + vid_name)
+            ydl.download([vid_name])
 
     @intent_handler("Youtubedl.intent")
     def handle_youtubedl_intent(self, message):
@@ -79,11 +70,15 @@ class YoutubedlSkill(MycroftSkill):
         vid_name = message.data.get("vid")
         if vid_name is not None:
             self.download_vid(vid_name)
+            if self.vid is not None:
+                self.play_vid()
         else:
             self.speak_dialog("youtubedl")
         self.log.info("Done youtubedl.")
 
     def stop(self):
+        if self.proc:
+            self.proc.terminate()
         pass
 
 
