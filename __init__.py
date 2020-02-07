@@ -89,7 +89,7 @@ class YoutubedlSkill(MycroftSkill):
         self.speak_dialog("youtubedl_stop")
 
     def stop(self):
-        self.log.error("Stop playing video youtubedl.")
+        self.log.info("Stop playing video youtubedl.")
         if self.proc:
             self.proc.terminate()
         if self.vid:
