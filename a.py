@@ -29,22 +29,22 @@ ydl_opts = {
     "default_search": "auto",
     "format": "bestaudio/best",
     "noplaylist": False,
-    "extract_flat": True,
+    "playlist_items": "1, 5",
 }
 
 with youtube_dl.YoutubeDL(ydl_opts) as ydl:
     # get info
     a = ydl.extract_info(
-        #  "https://www.youtube.com/watch?v=q7DfQMPmJRI&list=PL3htOwmtQv_yHPXNRHNJ-naKnAsvOuclt",
-        "tool fear inoculum full album playlist",
+        "https://www.youtube.com/watch?v=q7DfQMPmJRI&list=PL3htOwmtQv_yHPXNRHNJ-naKnAsvOuclt",
+        #  "ytsearch1:tool fear inoculum full album playlist",
         download=False,
-        process=False,
+        process=True,
         force_generic_extractor=ydl.params.get("force_generic_extractor", False),
     )
     #  print(a)
     # process the search url
     b = ydl.process_ie_result(a, download=False)
-    print(b["_type"])
+    print(b["entries"][0]["n_entries"])
 
     vid = None
     if "entries" in b:

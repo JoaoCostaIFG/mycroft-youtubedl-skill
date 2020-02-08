@@ -10,9 +10,9 @@ from os import remove
 class YoutubedlSkill(MycroftSkill):
     def __init__(self):
         super().__init__()
-        self.is_downloading = False
         self.proc = None
         self.vid = None
+        self.queue = []
 
     def initialize(self):
         my_setting = self.settings.get("my_setting")
@@ -39,40 +39,43 @@ class YoutubedlSkill(MycroftSkill):
         def youtubedl_hook(msg):
             if msg["status"] == "finished":
                 self.vid = msg["filename"]
-                self.log.info("Finished downloading " + vid_name)
+                self.log.info("Finished downloading " + vid_name + ".")
                 # play the stuff
                 self.log.info("Start playing video youtubedl.")
                 self.play_vid()
                 self.proc.wait()  # wait for end
+                del(self.queue[0])
             elif msg["status"] == "error":
-                self.vid = None
-                self.log.error("Error downloading " + vid_name + ".")
-                self.speak_dialog("Error downloading " + vid_name + ".")
+                self.stop()
+                self.log.error("Error playing " + vid_name + ".")
+                self.speak_dialog("Error playing " + vid_name + ".")
+                del(self.queue[0])
 
-        # stop current playing, if any
-        self.stop()
-        # check if a download is currently in progress
-        if self.is_downloading:
-            self.log.warning("Already downloading a video, wait.")
-            self.speak_dialog("Already downloading a video, wait.")
+        # queue songs
+        self.queue.append(vid_name)
+        if len(self.queue) > 1:
+            self.log.info("Queued " + vid_name + ".")
+            self.speak_dialog("Queued " + vid_name + ".")
             return
+        else:
+            self.log.info("Playing " + vid_name + ".")
+            self.speak_dialog("Playing " + vid_name + ".")
 
-        self.log.info("Downloading " + vid_name + ".")
-        self.speak_dialog("Downloading " + vid_name + ".")
-        self.is_downloading = True
         # youtube_dl options
-        ydl_opts = {
+        self.ydl_opts = {
             "default_search": "auto",
             "format": "bestaudio/best",
             "logtostderr": True,
+            "progress_hooks": [youtubedl_hook]
             #  "quiet": True,
-            "progress_hooks": [youtubedl_hook],
         }
 
-        # download and convert video
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([vid_name])
-        self.is_downloading = False
+        while len(self.queue):
+            # set video name
+            vid_name = self.queue[0]
+            # download and convert video
+            with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
+                ydl.download([vid_name])
 
     @intent_handler("Youtubedl.intent")
     def handle_youtubedl_intent(self, message):
