@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 from __future__ import unicode_literals
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler
@@ -44,7 +45,6 @@ class YoutubedlSkill(MycroftSkill):
         if self.vid:
             remove(self.vid)
         self.vid = None
-
 
     def download_vid(self, vid_name):
         # hook to check and handle failures
