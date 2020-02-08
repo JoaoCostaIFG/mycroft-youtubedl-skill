@@ -93,7 +93,9 @@ class YoutubedlSkill(MycroftSkill):
         """ This is a Padatious intent handler.
         It is triggered using a list of sample phrases."""
         vid_name = message.data.get("vid")
-        if vid_name is not None:
+        if not vid_name:
+            self.speak_dialog("youtubedl")
+        else:
             if vid_name == "stop":  # clear queue
                 self.stop()
                 self.speak_dialog("youtubedl_stop")
@@ -107,18 +109,16 @@ class YoutubedlSkill(MycroftSkill):
                 else:
                     self.log.warning("The play queue is empty.")
                     self.speak_dialog("The play queue is empty.")
-            elif vid_name == "current":  # check queue
+            elif vid_name == "current":  # check currently playing
                 if len(self.queue) > 0:
                     self.log.info("Currently playing " + self.queue[0])
-                    self.speak_dialog("Currently playing " + self.queue[0]
+                    self.speak_dialog("Currently playing " + self.queue[0])
                 else:
                     self.log.warning("Currently not playing anything.")
                     self.speak_dialog("Currently not playing anything.")
-            else: # play
+            else:  # play
                 self.download_vid(vid_name)
                 self.log.info("Done downloading video youtubedl.")
-        else:
-            self.speak_dialog("youtubedl")
         self.log.debug("Done youtubedl.")
 
     #  @intent_handler(IntentBuilder("YoutubedlStop").require("YoutubedlStopKeyword"))
