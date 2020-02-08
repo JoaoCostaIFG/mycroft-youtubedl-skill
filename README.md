@@ -9,6 +9,7 @@ playlists) and play its audio.
 
 ## Note
 
+Doesn't handle playlists (for now).
 This is a quick hack using [youtube-dl](https://github.com/ytdl-org/youtube-dl/)
 and [mpv](https://github.com/mpv-player/mpv). If anything breaks/stops working,
 try updating **youtube-dl**. The **youtube_dl** debian package isn't working
@@ -44,15 +45,25 @@ youtube download "video"
 ```
 
 Where "video" is the string to search for on Youtube. If a video is currently
-playing, the playback will stop and the new video will be downloaded/played.
+playing, the video will be queued.
 
-## Stop playing
+## Stop playing (clear play queue)
 
 ```txt
 youtube stop
 ```
 
-Stops playing the currently playing video (if any).
+## Skip playing (play next song)
+
+```txt
+youtube skip
+```
+
+## Check next in queue
+
+```txt
+youtube queue
+```
 
 ## Examples
 

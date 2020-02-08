@@ -44,12 +44,11 @@ class YoutubedlSkill(MycroftSkill):
                 self.log.info("Start playing video youtubedl.")
                 self.play_vid()
                 self.proc.wait()  # wait for end
-                del(self.queue[0])
+                self.skip()
             elif msg["status"] == "error":
-                self.stop()
                 self.log.error("Error playing " + vid_name + ".")
                 self.speak_dialog("Error playing " + vid_name + ".")
-                del(self.queue[0])
+                self.skip()
 
         # queue songs
         self.queue.append(vid_name)
@@ -83,9 +82,19 @@ class YoutubedlSkill(MycroftSkill):
         It is triggered using a list of sample phrases."""
         vid_name = message.data.get("vid")
         if vid_name is not None:
-            if vid_name == "stop":
+            if vid_name == "stop":  # clear queue
                 self.stop()
                 self.speak_dialog("youtubedl_stop")
+            elif vid_name == "skip":  # skip currently playing
+                self.skip()
+                #  self.speak_dialog("youtubedl_stop")
+            elif vid_name == "queue":  # check queue
+                if len(self.queue):
+                    self.log.info("Next in queue is " + self.queue[0])
+                    self.speak_dialog("Next in queue is " + self.queue[0])
+                else:
+                    self.log.info("The play queue is empty.")
+                    self.speak_dialog("The play queue is empty.")
             else:
                 self.download_vid(vid_name)
                 self.log.info("Done downloading video youtubedl.")
@@ -99,8 +108,23 @@ class YoutubedlSkill(MycroftSkill):
     #  self.stop()
     #  self.speak_dialog("youtubedl_stop")
 
+    def skip(self):
+        self.log.info("Skip playing video youtubedl.")
+        # remove current playing
+        if self.queue[0]:
+            del self.queue[0]
+        if self.proc:
+            self.proc.terminate()
+        if self.vid:
+            remove(self.vid)
+        # reset vars
+        self.vid = None
+        self.proc = None
+
     def stop(self):
         self.log.info("Stop playing video youtubedl.")
+        # clear queue
+        self.queue = []
         if self.proc:
             self.proc.terminate()
         if self.vid:
