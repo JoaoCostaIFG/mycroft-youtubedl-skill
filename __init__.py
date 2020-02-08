@@ -39,16 +39,13 @@ class YoutubedlSkill(MycroftSkill):
         def youtubedl_hook(msg):
             if msg["status"] == "finished":
                 self.vid = msg["filename"]
-                self.is_downloading = False
                 self.log.info("Finished downloading " + vid_name)
                 # play the stuff
                 self.log.info("Start playing video youtubedl.")
                 self.play_vid()
                 self.proc.wait()  # wait for end
-
             elif msg["status"] == "error":
                 self.vid = None
-                self.is_downloading = False
                 self.log.error("Error downloading " + vid_name + ".")
                 self.speak_dialog("Error downloading " + vid_name + ".")
 
@@ -67,7 +64,7 @@ class YoutubedlSkill(MycroftSkill):
         ydl_opts = {
             "default_search": "auto",
             "format": "bestaudio/best",
-            "noplaylist": True,
+            "logtostderr": True,
             "quiet": True,
             "progress_hooks": [youtubedl_hook],
         }
@@ -75,6 +72,7 @@ class YoutubedlSkill(MycroftSkill):
         # download and convert video
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([vid_name])
+        self.is_downloading = False
 
     @intent_handler("Youtubedl.intent")
     def handle_youtubedl_intent(self, message):

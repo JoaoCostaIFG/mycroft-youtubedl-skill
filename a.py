@@ -27,15 +27,44 @@ def youtubedl_hook(msg):
 
 ydl_opts = {
     "default_search": "auto",
-    "quiet": True,
     "format": "bestaudio/best",
-    "progress_hooks": [youtubedl_hook],
+    "noplaylist": False,
+    "extract_flat": True,
 }
 
-
 with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-    ydl.download(
-        [
-            "https://www.youtube.com/watch?v=xwJ8hsLTsbA&list=PLTad7jqoGMBrWLONVjMDYjoQQppi0MUon"
-        ]
+    # get info
+    a = ydl.extract_info(
+        #  "https://www.youtube.com/watch?v=q7DfQMPmJRI&list=PL3htOwmtQv_yHPXNRHNJ-naKnAsvOuclt",
+        "tool fear inoculum full album playlist",
+        download=False,
+        process=False,
+        force_generic_extractor=ydl.params.get("force_generic_extractor", False),
     )
+    #  print(a)
+    # process the search url
+    b = ydl.process_ie_result(a, download=False)
+    print(b["_type"])
+
+    vid = None
+    if "entries" in b:
+        print("playlist or list")
+        for i in b["entries"]:
+            print(i["title"])
+        vid = b["entries"][0]["url"]
+    else:
+        print("single video")
+        vid = b["url"]
+    print(vid)
+
+    #  print(len(list(a["entries"])))
+
+    #  ydl_opts = {
+    #  "default_search": "auto",
+    #  "format": "bestaudio/best",
+    #  "skip_download": True,
+    #  }
+
+    #  # download and convert video
+    #  with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    #  ydl.download(["tool fear inoculum full album playlist"])
