@@ -36,7 +36,7 @@ class YoutubedlSkill(MycroftSkill):
     def queue_next(self):
         self.log.info("Next in queue.")
         # remove current playing
-        if self.queue[0]:
+        if len(self.queue) > 1:
             del self.queue[0]
         # reset vars
         if self.proc:
