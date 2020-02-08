@@ -31,8 +31,20 @@ class YoutubedlSkill(MycroftSkill):
             self.log.error("Error playing video youtubedl: non-existent file.")
         except CalledProcessError:
             self.log.error("Error playing video youtubedl: non-existent file.")
-        #  self.log.info("Finished playing video youtubedl.")
-        #  self.stop()
+
+    def queue_next(self):
+        self.log.error("Next in queue.")
+        # remove current playing
+        if self.queue[0]:
+            del self.queue[0]
+        # reset vars
+        if self.proc:
+            self.proc.terminate()
+        self.proc = None
+        if self.vid:
+            remove(self.vid)
+        self.vid = None
+
 
     def download_vid(self, vid_name):
         # hook to check and handle failures
@@ -44,11 +56,11 @@ class YoutubedlSkill(MycroftSkill):
                 self.log.info("Start playing video youtubedl.")
                 self.play_vid()
                 self.proc.wait()  # wait for end
-                self.skip()
+                self.queue_next()
             elif msg["status"] == "error":
                 self.log.error("Error playing " + vid_name + ".")
                 self.speak_dialog("Error playing " + vid_name + ".")
-                self.skip()
+                self.queue_next()
 
         # queue songs
         self.queue.append(vid_name)
@@ -89,12 +101,19 @@ class YoutubedlSkill(MycroftSkill):
                 self.skip()
                 #  self.speak_dialog("youtubedl_stop")
             elif vid_name == "queue":  # check queue
-                if len(self.queue):
-                    self.log.info("Next in queue is " + self.queue[0])
-                    self.speak_dialog("Next in queue is " + self.queue[0])
+                if self.queue[1]:
+                    self.log.info("Next in queue is " + self.queue[1])
+                    self.speak_dialog("Next in queue is " + self.queue[1])
                 else:
                     self.log.info("The play queue is empty.")
                     self.speak_dialog("The play queue is empty.")
+            elif vid_name == "current":  # check queue
+                if self.queue[0]:
+                    self.log.info("Currently playing " + self.queue[0])
+                    self.speak_dialog("Currently playing " + self.queue[0])
+                else:
+                    self.log.info("Currently not playing anything.")
+                    self.speak_dialog("Currently not playing anything.")
             else:
                 self.download_vid(vid_name)
                 self.log.info("Done downloading video youtubedl.")
@@ -110,28 +129,21 @@ class YoutubedlSkill(MycroftSkill):
 
     def skip(self):
         self.log.info("Skip playing video youtubedl.")
-        # remove current playing
-        if self.queue[0]:
-            del self.queue[0]
         if self.proc:
             self.proc.terminate()
-        if self.vid:
-            remove(self.vid)
-        # reset vars
-        self.vid = None
         self.proc = None
 
     def stop(self):
         self.log.info("Stop playing video youtubedl.")
         # clear queue
         self.queue = []
+        # reset vars
         if self.proc:
             self.proc.terminate()
+        self.proc = None
         if self.vid:
             remove(self.vid)
-        # reset vars
         self.vid = None
-        self.proc = None
 
 
 def create_skill():

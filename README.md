@@ -65,6 +65,12 @@ youtube skip
 youtube queue
 ```
 
+## Check currently playing video
+
+```txt
+youtube current
+```
+
 ## Examples
 
 - "Youtube tool lateralus"
