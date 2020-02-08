@@ -65,7 +65,7 @@ class YoutubedlSkill(MycroftSkill):
             "default_search": "auto",
             "format": "bestaudio/best",
             "logtostderr": True,
-            "quiet": True,
+            #  "quiet": True,
             "progress_hooks": [youtubedl_hook],
         }
 
