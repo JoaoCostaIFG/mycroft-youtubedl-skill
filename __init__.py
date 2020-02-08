@@ -36,7 +36,7 @@ class YoutubedlSkill(MycroftSkill):
     def queue_next(self):
         self.log.info("Next in queue.")
         # remove current playing
-        if len(self.queue) > 1:
+        if len(self.queue) > 0:
             del self.queue[0]
         # reset vars
         if self.proc:
@@ -64,13 +64,13 @@ class YoutubedlSkill(MycroftSkill):
 
         # queue songs
         self.queue.append(vid_name)
-        if len(self.queue) > 1:
+        if len(self.queue) == 0:
+            self.log.info("Playing " + vid_name + ".")
+            self.speak_dialog("Playing " + vid_name + ".")
+        else:
             self.log.info("Queued " + vid_name + ".")
             self.speak_dialog("Queued " + vid_name + ".")
             return
-        else:
-            self.log.info("Playing " + vid_name + ".")
-            self.speak_dialog("Playing " + vid_name + ".")
 
         # youtube_dl options
         self.ydl_opts = {
