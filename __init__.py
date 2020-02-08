@@ -93,6 +93,7 @@ class YoutubedlSkill(MycroftSkill):
         """ This is a Padatious intent handler.
         It is triggered using a list of sample phrases."""
         vid_name = message.data.get("vid")
+        self.log.debug(self.queue)
         if not vid_name:
             self.speak_dialog("youtubedl")
         else:
