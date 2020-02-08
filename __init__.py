@@ -34,7 +34,7 @@ class YoutubedlSkill(MycroftSkill):
             self.log.error("Error playing video youtubedl: non-existent file.")
 
     def queue_next(self):
-        self.log.info("Next in queue.")
+        self.log.info("Get next in queue.")
         # remove current playing
         if len(self.queue) > 0:
             del self.queue[0]
@@ -76,7 +76,7 @@ class YoutubedlSkill(MycroftSkill):
         self.ydl_opts = {
             "default_search": "auto",
             "format": "bestaudio/best",
-            "logtostderr": True,
+            #  "logtostderr": True,
             "progress_hooks": [youtubedl_hook]
             #  "quiet": True,
         }
@@ -93,7 +93,7 @@ class YoutubedlSkill(MycroftSkill):
         """ This is a Padatious intent handler.
         It is triggered using a list of sample phrases."""
         vid_name = message.data.get("vid")
-        self.log.error(self.queue)
+        self.log.debug("Current queue:", self.queue)
         if not vid_name:
             self.speak_dialog("youtubedl")
         else:
