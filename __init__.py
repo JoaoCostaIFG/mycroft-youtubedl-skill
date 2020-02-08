@@ -64,7 +64,7 @@ class YoutubedlSkill(MycroftSkill):
 
         # queue songs
         self.queue.append(vid_name)
-        if len(self.queue) == 0:
+        if len(self.queue) == 1:
             self.log.info("Playing " + vid_name + ".")
             self.speak_dialog("Playing " + vid_name + ".")
         else:
