@@ -1,6 +1,6 @@
 # Youtube_dl skill for mycroft
 
-Searches from and downloads a youtube video and plays it.
+Searches for and downloads a youtube video, and queues it for playing.
 
 ## About
 
@@ -12,8 +12,8 @@ playlists) and play its audio.
 Doesn't handle playlists (for now).
 This is a quick hack using [youtube-dl](https://github.com/ytdl-org/youtube-dl/)
 and [mpv](https://github.com/mpv-player/mpv). If anything breaks/stops working,
-try updating **youtube-dl**. The **youtube_dl** debian package isn't working
-for me (don't know why) but the pip3 one is, so take that into consideration
+try updating **youtube-dl**. The **youtube-dl** Debian package isn't working
+for me (don't know why) but the **pip3** one is, so take that into consideration
 if this doesn't work.
 
 ## Install
